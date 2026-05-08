@@ -43,31 +43,39 @@ class Dice:
   
 
     def draw(self, window, font):
-        """Die Funktion zeichnet den Würfel, führt bei Bedarf die Roll‑Animation aus, 
-        markiert fixierte Würfel mit einem blauen Rahmen 
+        """Die Funktion zeichnet den Würfel, führt bei Bedarf die Roll‑Animation aus,
+        markiert fixierte Würfel mit einem blauen Rahmen
         und rendert anschließend die passenden Punkte entsprechend des aktuellen Würfelwerts."""
+
         # === Animation ===
         if getattr(self, "animating", False):
             self.value = random.randint(1, 6)
 
-            pygame.time.delay(60)   
+            # Kleine Wackelbewegung während der Animation
+            offset_x = random.randint(-3, 3)
+            offset_y = random.randint(-3, 3)
+            temp_rect = self.rect.move(offset_x, offset_y)
 
+            pygame.time.delay(60)
             self.animation_frames -= 1
 
             if self.animation_frames <= 0:
                 self.animating = False
                 self.value = random.randint(1, 6)
+                temp_rect = self.rect  # wieder normale Position
+        else:
+            temp_rect = self.rect
 
         # === Würfel-Hintergrund ===
-        pygame.draw.rect(window, "white", self.rect, border_radius=8)
+        pygame.draw.rect(window, "white", temp_rect, border_radius=8)
 
-        #Fixierter Würfel → blauer Rahmen
+        # Fixierter Würfel → blauer Rahmen
         if self.fixed:
-            pygame.draw.rect(window, (0, 0, 255), self.rect, width=4, border_radius=8)
+            pygame.draw.rect(window, (0, 0, 255), temp_rect, width=4, border_radius=8)
 
         # === Punkte zeichnen ===
-        cx = self.rect.x + self.rect.width // 2
-        cy = self.rect.y + self.rect.height // 2
+        cx = temp_rect.x + temp_rect.width // 2
+        cy = temp_rect.y + temp_rect.height // 2
         r = 6
 
         positions = {

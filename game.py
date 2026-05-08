@@ -5,6 +5,7 @@ import game
 import cup
 import dice
 import player
+import math 
 #=== Klasse Game ===
 class Game:
     def __init__(self):
@@ -43,11 +44,28 @@ class Game:
         ]
     
     def create_dices(self):
-        self.dices.append(dice.Dice(1, False, 20, {"x": 10, "y": 10}, "white",  20, 20))
-        self.dices.append(dice.Dice(2, False, 20, {"x": 10, "y": 10}, "white", 120, 20))
-        self.dices.append(dice.Dice(3, False, 20, {"x": 10, "y": 10}, "white", 220, 20))
-        self.dices.append(dice.Dice(4, False, 20, {"x": 10, "y": 10}, "white", 320, 20))
-        self.dices.append(dice.Dice(5, False, 20, {"x": 10, "y": 10}, "white", 420, 20))
+        import math
+
+        center_x = 300
+        center_y = 300
+        radius = 130      # Abstand vom Mittelpunkt
+        offset = 40       # halbe Würfelgröße (für korrekte Zentrierung)
+
+        # 5 gleichmäßig verteilte Winkel (360° / 5 = 72°)
+        angles = [90, 162, 234, 306, 18]   # Start oben, dann im Uhrzeigersinn
+
+        for i, angle in enumerate(angles):
+            rad = math.radians(angle)
+
+            x = center_x + math.cos(rad) * radius - offset
+            y = center_y + math.sin(rad) * radius - offset
+
+            self.dices.append(
+                dice.Dice(i+1, False, 20, {"x": 10, "y": 10}, "white", int(x), int(y))
+            )
+
+
+
     
     def create_player_list(self):
         player_number = self.choose_player_count(self.window, self.font)
@@ -60,7 +78,6 @@ class Game:
         self.create_dices()
         self.create_player_list()
        
-
         for i in range(len(self.dices)):
             self.dices[i].roll_dice()
 
@@ -115,13 +132,16 @@ class Game:
 
             #Hintergrundfarbe
             # self.window.blit(self.background, (0,0))
-            self.window.fill("black")
+            self.window.fill((20,20,20))
+
+            pygame.draw.circle(self.window, (30, 77, 30), (300, 300), 250)
+
 
             player_text = self.font.render(f"Spieler: {self.player_list[self.current_player].name}", True, (255,255,255))
-            self.window.blit(player_text, (20, 120))
+            self.window.blit(player_text, (550, 120))
 
             roll_text = self.font.render(f"Würfe übrig: {self.rolls_left}", True, (0,0,255))
-            self.window.blit(roll_text, (20, 160))
+            self.window.blit(roll_text, (550, 160))
 
             #Würfel zeichnen
             for i in range(len(self.dices)):
