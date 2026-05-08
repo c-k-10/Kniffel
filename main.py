@@ -41,7 +41,7 @@ player_number = game.choose_player_count(window, font)
 
 for i in range(player_number):
     name = game.get_player_name(window, font, i+1)
-    player_list.append(player.Player(game.create_scoreboard(), name, False, "easy", False))
+    player_list.append(player.Player(game.create_scoreboard(), name, False, "easy", False, 0))
 
 # === MAIN SCHLEIFE ===
 while running:
@@ -77,6 +77,13 @@ while running:
                     if row.locked == False:
                         row.value = row.possible_value
                         row.locked = True
+
+                        if all(r.locked for r in player_list[current_player].scorecard) == True:
+                            player_list[current_player].sum_score()
+                            
+                            
+                        if all(all(row.locked for row in p.scorecard) for p in player_list):
+                            game.won(window, font, player_list)
 
                         current_player = (current_player + 1) % len(player_list)
                         rolls_left = 2

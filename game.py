@@ -7,11 +7,22 @@ class Game:
         self.cup = cup
         self.window = window
 
-    def game_won():
-        pass
-
-    def play_turn():
-        pass
+    def create_scoreboard(self):
+        return [
+        scorecard.Scorecard("Einser", 0, 20, False,0,False),
+        scorecard.Scorecard("Zweier", 0, 80, False,0,False),
+        scorecard.Scorecard("Dreier", 0, 140, False,0,False),
+        scorecard.Scorecard("Vierer", 0, 200, False,0,False),
+        scorecard.Scorecard("Fünfer", 0, 260, False,0,False),
+        scorecard.Scorecard("Sechser", 0, 320, False,0,False),
+        scorecard.Scorecard("Dreierpasch", 0, 380, False,0,False),
+        scorecard.Scorecard("Viererpasch", 0, 440, False,0,False),
+        scorecard.Scorecard("Full House", 0, 500, False,0,False),
+        scorecard.Scorecard("Kleine Straße", 0, 560, False,0,False),
+        scorecard.Scorecard("Große Straße", 0, 620, False,0,False),
+        scorecard.Scorecard("Kniffel", 0, 680, False,0,False),
+        scorecard.Scorecard("Chance", 0, 740, False,0,False),
+        ]
 
     def choose_player_count(self, window, font):
         one_btn   = pygame.Rect(500, 250, 300, 60)
@@ -80,19 +91,35 @@ class Game:
 
         
 
-    def create_scoreboard(self):
-        return [
-        scorecard.Scorecard("Einser", 0, 20, False,0,False),
-        scorecard.Scorecard("Zweier", 0, 80, False,0,False),
-        scorecard.Scorecard("Dreier", 0, 140, False,0,False),
-        scorecard.Scorecard("Vierer", 0, 200, False,0,False),
-        scorecard.Scorecard("Fünfer", 0, 260, False,0,False),
-        scorecard.Scorecard("Sechser", 0, 320, False,0,False),
-        scorecard.Scorecard("Dreierpasch", 0, 380, False,0,False),
-        scorecard.Scorecard("Viererpasch", 0, 440, False,0,False),
-        scorecard.Scorecard("Full House", 0, 500, False,0,False),
-        scorecard.Scorecard("Kleine Straße", 0, 560, False,0,False),
-        scorecard.Scorecard("Große Straße", 0, 620, False,0,False),
-        scorecard.Scorecard("Kniffel", 0, 680, False,0,False),
-        scorecard.Scorecard("Chance", 0, 740, False,0,False),
-        ]
+    def won(self, win, font, player_list):
+
+        max_score = 0
+        max_name = ""
+       
+        
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                if event.type == pygame.KEYDOWN:
+                    pass
+
+            win.fill((20,20,20))
+
+            y = 250
+            for player in player_list:
+                title = font.render(f"{player.name}: {player.final_score}", True, (255,255,255))
+                win.blit(title, (450, y))
+                y += 50
+
+            for player in player_list:
+                if player.final_score > max_score:
+                    max_score = player.final_score
+                    max_name = player.name
+
+            won_text = font.render(f"{max_name} hat mit {max_score} gewonnen!", True, (255,255,255))
+            win.blit(won_text, (450, y + 50))
+        
+            pygame.display.update()

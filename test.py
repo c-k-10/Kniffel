@@ -114,10 +114,10 @@ def create_scoreboard():
 # ---------------------------------------------------------
 player_count = choose_player_count(window, font)
 
-players = []
+players_list = []
 for i in range(player_count):
     name = get_player_name(window, font, i+1)
-    players.append(player.Player(create_scoreboard(), name, False, "easy"))
+    players_list.append(player.Player(create_scoreboard(), name, False, "easy", False))
 
 # ---------------------------------------------------------
 #   WÜRFEL ERSTELLEN
@@ -131,7 +131,7 @@ dices = [
 ]
 
 cup = cup.Cup(dices)
-game = game.Game(players, cup, window)
+game = game.Game(players_list, cup, window)
 
 # ⭐ Spieler, der dran ist
 current_player = 0
@@ -168,14 +168,21 @@ while running:
 
         # ⭐ Scoreboard anklicken
         if event.type == pygame.MOUSEBUTTONDOWN:
-            for row in players[current_player].scorecard:
+            for row in players_list[current_player].scorecard:
                 if row.rect.collidepoint(event.pos):
                     if row.possible and not row.locked:
+
+                        # Wert setzen
                         row.score = row.possible_value
                         row.locked = True
 
+                        # ⭐ Prüfen ob Spieler fertig ist
+                        if all(r.locked for r in players_list[current_player].scorecard):
+                            total = sum(r.score for r in players_list[current_player].scorecard)
+                            print(f"{players_list[current_player].name} ist fertig! Gesamtpunkte: {total}")
+
                         # Spielerwechsel
-                        current_player = (current_player + 1) % len(players)
+                        current_player = (current_player + 1) % len(players_list)
 
                         # Würfe zurücksetzen
                         rolls_left = 3
@@ -189,7 +196,7 @@ while running:
     window.blit(background, (0,0))
 
     # ⭐ Spielername anzeigen
-    player_text = font.render(f"Spieler: {players[current_player].name}", True, (255,255,255))
+    player_text = font.render(f"Spieler: {players_list[current_player].name}", True, (255,255,255))
     window.blit(player_text, (20, 120))
 
     # ⭐ Würfe anzeigen
@@ -202,7 +209,7 @@ while running:
 
     # Scoreboard zeichnen + mögliche Punkte berechnen
     counts, values, total = cup.counts()
-    for row in players[current_player].scorecard:
+    for row in players_list[current_player].scorecard:
         row.possible_score(counts, values, total)
         row.draw(window, font)
 
