@@ -52,8 +52,8 @@ class Dice:
             self.value = random.randint(1, 6)
 
             # Kleine Wackelbewegung während der Animation
-            offset_x = random.randint(-3, 3)
-            offset_y = random.randint(-3, 3)
+            offset_x = random.randint(-30, 30)
+            offset_y = random.randint(-30, 30)
             temp_rect = self.rect.move(offset_x, offset_y)
 
             pygame.time.delay(60)

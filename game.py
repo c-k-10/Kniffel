@@ -15,6 +15,7 @@ class Game:
         self.button = pygame.Rect(20,730,130,50)
         self.running = True
         self.font = pygame.font.SysFont("comicsansms", 28, bold=True)
+        self.head_font = pygame.font.SysFont("comicsansms", 35, bold=True)
         self.window = pygame.display.set_mode((1300,800))
         self.window = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         # self.background = pygame.image.load("background.png")
@@ -64,11 +65,8 @@ class Game:
                 dice.Dice(i+1, False, 20, {"x": 10, "y": 10}, "white", int(x), int(y))
             )
 
-
-
-    
     def create_player_list(self):
-        player_number = self.choose_player_count(self.window, self.font)
+        player_number = self.choose_player_count(self.window, self.font, self.head_font)
 
         for i in range(player_number):
             name = self.get_player_name(self.window, self.font, i+1)
@@ -132,7 +130,7 @@ class Game:
 
             #Hintergrundfarbe
             # self.window.blit(self.background, (0,0))
-            self.window.fill((20,20,20))
+            self.window.fill((0,0,0))
 
             pygame.draw.circle(self.window, (30, 77, 30), (300, 300), 250)
 
@@ -161,18 +159,42 @@ class Game:
         
             pygame.display.update()
 
-    def choose_player_count(self, window, font):
+    def choose_player_count(self, window, font, head_font):
         """Die Funktion zeigt ein Auswahlmenü an, 
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
-        one_btn   = pygame.Rect(500, 250, 300, 60)
-        two_btn   = pygame.Rect(500, 330, 300, 60)
-        three_btn = pygame.Rect(500, 410, 300, 60)
-        four_btn  = pygame.Rect(500, 490, 300, 60)
+        one_btn   = pygame.Rect(500, 350, 300, 60)
+        two_btn   = pygame.Rect(500, 430, 300, 60)
+        three_btn = pygame.Rect(500, 510, 300, 60)
+        four_btn  = pygame.Rect(500, 590, 300, 60)
+
+        spiel_info = (
+        "Kniffel - Spielinfo\n\n"
+        "Kniffel wird mit 5 Würfeln gespielt.\n"
+        "Du hast pro Runde bis zu 3 Würfe und kannst nach jedem Wurf Würfel festhalten.\n"
+        "Danach musst du eine Kategorie wählen.\n\n"
+        "Oberer Teil:\n"
+        "- Einser bis Sechser\n"
+        "- Bonus ab 63 Punkten: +35 Punkte\n\n"
+        "Unterer Teil:\n"
+        "- Dreierpasch, Viererpasch\n"
+        "- Full House (25 Punkte)\n"
+        "- Kleine Straße (30 Punkte)\n"
+        "- Große Straße (40 Punkte)\n"
+        "- Kniffel (50 Punkte)\n"
+        "- Chance\n\n"
+        "Gewinner ist, wer die meisten Punkte hat."
+    )
+
+
 
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: 
                     pygame.quit()
                     exit()
 
@@ -184,8 +206,16 @@ class Game:
 
             window.fill((20,20,20))
 
+            lines = spiel_info.split("\n")
+            for i, line in enumerate(lines):
+                rendered = font.render(line, True, (255,255,255))
+                window.blit(rendered, (1300, 200 + i * rendered.get_height()))
+
+            h_font = head_font.render("Willkommen bei Kniffel!", True, (255,255,255))
+            window.blit(h_font, (200,100))
+
             title = font.render("Wie viele Spieler?", True, (255,255,255))
-            window.blit(title, (500, 150))
+            window.blit(title, (500, 250))
 
             pygame.draw.rect(window, "white", one_btn)
             pygame.draw.rect(window, "white", two_btn)
@@ -231,8 +261,6 @@ class Game:
             window.blit(name_surface, (input_box.x + 10, input_box.y + 10))
 
             pygame.display.update()
-
-        
 
     def won(self, win, font, player_list):
         """Die Funktion zeigt den Endbildschirm an, listet alle Spieler mit ihren finalen Punktzahlen auf, 
