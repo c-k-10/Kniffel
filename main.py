@@ -22,13 +22,17 @@ player_list = []
 dices = []
 
 current_player = 0
-rolls_left = 3
+rolls_left = 2
 
 dices.append(dice.Dice(1, False, 20, {"x": 10, "y": 10}, "white",  20, 20))
 dices.append(dice.Dice(2, False, 20, {"x": 10, "y": 10}, "white", 120, 20))
 dices.append(dice.Dice(3, False, 20, {"x": 10, "y": 10}, "white", 220, 20))
 dices.append(dice.Dice(4, False, 20, {"x": 10, "y": 10}, "white", 320, 20))
 dices.append(dice.Dice(5, False, 20, {"x": 10, "y": 10}, "white", 420, 20))
+
+for i in range(len(dices)):
+    dices[i].roll_dice()
+                    
 
 cup = cup.Cup(dices)
 game = game.Game(player_list, cup, window)
@@ -37,7 +41,7 @@ player_number = game.choose_player_count(window, font)
 
 for i in range(player_number):
     name = game.get_player_name(window, font, i+1)
-    player_list.append(player.Player(game.create_scoreboard(), name, False, "easy"))
+    player_list.append(player.Player(game.create_scoreboard(), name, False, "easy", False))
 
 # === MAIN SCHLEIFE ===
 while running:
@@ -51,8 +55,13 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.collidepoint(event.pos):
-                 for i in range(len(dices)):
-                    dices[i].roll_dice()
+                 if rolls_left > 0:
+                    rolls_left = rolls_left - 1
+                    for i in range(len(dices)):
+                        dices[i].roll_dice()
+                        dices[i].roll_dice()
+                        
+                    
 
         if event.type == pygame.MOUSEBUTTONDOWN:
              for dice in dices:
@@ -61,6 +70,22 @@ while running:
                         dice.fixed = False
                     else:
                         dice.fixed = True
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for row in player_list[current_player].scorecard:
+                if row.rect.collidepoint(event.pos):
+                    if row.locked == False:
+                        row.value = row.possible_value
+                        row.locked = True
+
+                        current_player = (current_player + 1) % len(player_list)
+                        rolls_left = 2
+
+                        for d in dices:
+                            d.fixed = False
+
+                        for i in range(len(dices)):
+                            dices[i].roll_dice()
                         
 
     #Hintergrundfarbe
@@ -68,6 +93,9 @@ while running:
 
     player_text = font.render(f"Spieler: {player_list[current_player].name}", True, (255,255,255))
     window.blit(player_text, (20, 120))
+
+    roll_text = font.render(f"Würfe übrig: {rolls_left}", True, (0,0,255))
+    window.blit(roll_text, (20, 160))
 
     #Würfel zeichnen
     for i in range(len(dices)):

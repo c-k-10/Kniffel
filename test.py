@@ -90,25 +90,24 @@ def get_player_name(window, font, number):
         pygame.display.update()
 
 # ---------------------------------------------------------
-#   SCORECARD ERSTELLEN
+#   SCOREBOARD ERSTELLEN
 # ---------------------------------------------------------
 def create_scoreboard():
-        return [
-        scorecard.Scorecard("Einser", 0, 20, False,0,False),
-        scorecard.Scorecard("Zweier", 0, 80, False,0,False),
-        scorecard.Scorecard("Dreier", 0, 140, False,0,False),
-        scorecard.Scorecard("Vierer", 0, 200, False,0,False),
-        scorecard.Scorecard("Fünfer", 0, 260, False,0,False),
-        scorecard.Scorecard("Sechser", 0, 320, False,0,False),
-        scorecard.Scorecard("Dreierpasch", 0, 380, False,0,False),
-        scorecard.Scorecard("Viererpasch", 0, 440, False,0,False),
-        scorecard.Scorecard("Full House", 0, 500, False,0,False),
-        scorecard.Scorecard("Kleine Straße", 0, 560, False,0,False),
-        scorecard.Scorecard("Große Straße", 0, 620, False,0,False),
-        scorecard.Scorecard("Kniffel", 0, 680, False,0,False),
-        scorecard.Scorecard("Chance", 0, 740, False,0,False),
-        ]
-
+    return [
+        scorecard.Scorecard("Einser", 0, 20, False, 0, False),
+        scorecard.Scorecard("Zweier", 0, 80, False, 0, False),
+        scorecard.Scorecard("Dreier", 0, 140, False, 0, False),
+        scorecard.Scorecard("Vierer", 0, 200, False, 0, False),
+        scorecard.Scorecard("Fünfer", 0, 260, False, 0, False),
+        scorecard.Scorecard("Sechser", 0, 320, False, 0, False),
+        scorecard.Scorecard("Dreierpasch", 0, 380, False, 0, False),
+        scorecard.Scorecard("Viererpasch", 0, 440, False, 0, False),
+        scorecard.Scorecard("Full House", 0, 500, False, 0, False),
+        scorecard.Scorecard("Kleine Straße", 0, 560, False, 0, False),
+        scorecard.Scorecard("Große Straße", 0, 620, False, 0, False),
+        scorecard.Scorecard("Kniffel", 0, 680, False, 0, False),
+        scorecard.Scorecard("Chance", 0, 740, False, 0, False),
+    ]
 
 # ---------------------------------------------------------
 #   STARTMENÜ AUSFÜHREN
@@ -119,7 +118,6 @@ players = []
 for i in range(player_count):
     name = get_player_name(window, font, i+1)
     players.append(player.Player(create_scoreboard(), name, False, "easy"))
-
 
 # ---------------------------------------------------------
 #   WÜRFEL ERSTELLEN
@@ -141,7 +139,6 @@ current_player = 0
 # ⭐ Würfe pro Runde
 rolls_left = 3
 
-
 # ---------------------------------------------------------
 #   MAIN-SCHLEIFE
 # ---------------------------------------------------------
@@ -150,7 +147,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: 
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             running = False
 
         # Würfeln
@@ -165,9 +162,29 @@ while running:
 
         # Würfel fixieren
         if event.type == pygame.MOUSEBUTTONDOWN:
-             for d in dices:
+            for d in dices:
                 if d.rect.collidepoint(event.pos):
                     d.fixed = not d.fixed
+
+        # ⭐ Scoreboard anklicken
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for row in players[current_player].scorecard:
+                if row.rect.collidepoint(event.pos):
+                    if row.possible and not row.locked:
+                        row.score = row.possible_value
+                        row.locked = True
+
+                        # Spielerwechsel
+                        current_player = (current_player + 1) % len(players)
+
+                        # Würfe zurücksetzen
+                        rolls_left = 3
+
+                        # Würfel freigeben
+                        for d in dices:
+                            d.fixed = False
+
+                        break
 
     window.blit(background, (0,0))
 
@@ -183,8 +200,10 @@ while running:
     for d in dices:
         d.draw(window,font)
 
-    # Scorecard zeichnen
+    # Scoreboard zeichnen + mögliche Punkte berechnen
+    counts, values, total = cup.counts()
     for row in players[current_player].scorecard:
+        row.possible_score(counts, values, total)
         row.draw(window, font)
 
     # Würfeln-Button
@@ -192,7 +211,7 @@ while running:
     text = font.render("Würfeln", True, (0, 0, 0))
     text_rect = text.get_rect(center=button.center)
     window.blit(text, text_rect)
-   
+
     pygame.display.update()
 
 pygame.quit()

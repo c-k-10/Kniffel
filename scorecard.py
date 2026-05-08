@@ -30,6 +30,16 @@ class Scorecard:
 
             win.blit(name_text, (self.rect.x + 10, self.rect.y + 8))
             win.blit(val_text, (self.rect.right - 40, self.rect.y + 8))
+        elif self.locked == True:
+            #Rechteck zeichnen
+            pygame.draw.rect(win, (40, 40, 40), self.rect)
+            #Name schreiben 
+            name_text = font.render(self.name, True, (0, 0, 0))
+            #Value schreiben
+            val_text = font.render(str(self.value), True, (0, 0, 0))
+
+            win.blit(name_text, (self.rect.x + 10, self.rect.y + 8))
+            win.blit(val_text, (self.rect.right - 40, self.rect.y + 8))
         else:
         #Rechteck zeichnen
             pygame.draw.rect(win, (40, 40, 40), self.rect)
