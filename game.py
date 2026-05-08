@@ -163,30 +163,36 @@ class Game:
         """Die Funktion zeigt ein Auswahlmenü an, 
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
+
         one_btn   = pygame.Rect(500, 350, 300, 60)
         two_btn   = pygame.Rect(500, 430, 300, 60)
         three_btn = pygame.Rect(500, 510, 300, 60)
         four_btn  = pygame.Rect(500, 590, 300, 60)
 
         spiel_info = (
-        "Kniffel - Spielinfo\n\n"
-        "Kniffel wird mit 5 Würfeln gespielt.\n"
-        "Du hast pro Runde 3 Würfe und kannst nach jedem Wurf Würfel festhalten.\n"
-        "Danach musst du eine Kategorie wählen.\n\n"
-        "Oberer Teil:\n"
-        "- Einser bis Sechser\n"
-        "- Bonus ab 63 Punkten: +35 Punkte\n\n"
-        "Unterer Teil:\n"
-        "- Dreierpasch, Viererpasch\n"
-        "- Full House (25 Punkte)\n"
-        "- Kleine Straße (30 Punkte)\n"
-        "- Große Straße (40 Punkte)\n"
-        "- Kniffel (50 Punkte)\n"
-        "- Chance\n\n"
-        "Gewinner ist, wer die meisten Punkte hat."
-    )
+            "Kniffel - Spielinfo\n\n"
+            "Kniffel wird mit 5 Würfeln gespielt.\n"
+            "Du hast pro Runde 3 Würfe und \nkannst nach jedem Wurf Würfel festhalten.\n"
+            "Danach musst du eine Kategorie wählen.\n\n"
+            "Oberer Teil:\n"
+            "- Einser bis Sechser\n"
+            "- Bonus ab 63 Punkten: +35 Punkte\n\n"
+            "Unterer Teil:\n"
+            "- Dreierpasch, Viererpasch\n"
+            "- Full House (25 Punkte)\n"
+            "- Kleine Straße (30 Punkte)\n"
+            "- Große Straße (40 Punkte)\n"
+            "- Kniffel (50 Punkte)\n"
+            "- Chance\n\n"
+            "Gewinner ist, wer die meisten Punkte hat."
+        )
 
-
+        # === Hilfsfunktion für mehrzeiligen Text ===
+        def draw_multiline_text(surface, text, x, y, font, color=(255,255,255)):
+            lines = text.split("\n")
+            for i, line in enumerate(lines):
+                rendered = font.render(line, True, color)
+                surface.blit(rendered, (x, y + i * rendered.get_height()))
 
         while True:
             for event in pygame.event.get():
@@ -206,17 +212,22 @@ class Game:
 
             window.fill((20,20,20))
 
-            lines = spiel_info.split("\n")
-            for i, line in enumerate(lines):
-                rendered = font.render(line, True, (255,255,255))
-                window.blit(rendered, (window.get_width() - (window.get_width() * 0.50), 300 + i * rendered.get_height()))
+            # === Dynamische Fensterbreite ===
+            win_w = window.get_width()
 
+            # === Info-Text rechts anzeigen (10% Abstand vom Rand) ===
+            right_x = int(win_w * 0.60)   # 60% der Breite = rechter Bereich
+            draw_multiline_text(window, spiel_info, right_x, 300, font)
+
+            # === Überschrift ===
             h_font = head_font.render("Willkommen bei Kniffel!", True, (255,255,255))
             window.blit(h_font, (200,100))
 
+            # === Titel ===
             title = font.render("Wie viele Spieler?", True, (255,255,255))
             window.blit(title, (500, 250))
 
+            # === Buttons ===
             pygame.draw.rect(window, "white", one_btn)
             pygame.draw.rect(window, "white", two_btn)
             pygame.draw.rect(window, "white", three_btn)
@@ -228,6 +239,7 @@ class Game:
             window.blit(font.render("4 Spieler", True, (0,0,0)), (four_btn.x+40, four_btn.y+10))
 
             pygame.display.update()
+
         
     def get_player_name(self, window, font, number):
         """Die Funktion zeigt ein Eingabefeld an, in das der Spieler seinen Namen eintippen kann, 
