@@ -1,13 +1,31 @@
+#=== Imports ===
 import pygame
 import scorecard
-
+import game
+import cup
+import dice
+import player
+#=== Klasse Game ===
 class Game:
-    def __init__(self, players:list, cup, window):
-        self.players = players
-        self.cup = cup
-        self.window = window
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("Kniffel")
+        self.player_list = []
+        self.button = pygame.Rect(20,730,130,50)
+        self.running = True
+        self.font = pygame.font.SysFont("comicsansms", 28, bold=True)
+        self.window = pygame.display.set_mode((1300,800))
+        self.window = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        # self.background = pygame.image.load("background.png")
+        # self.background = pygame.transform.scale(self.background, (1300, 800))
+        self.current_player = 0
+        self.rolls_left = 2
+        self.dices = []
+        self.dice_cup = cup.Cup(self.dices)
 
     def create_scoreboard(self):
+        """Die Funktion erzeugt eine vollständige Liste aller Scoreboard‑Einträge für Kniffel, 
+        wobei jeder Eintrag mit Namen, Startwerten und seiner festen Bildschirmposition initialisiert wird."""
         return [
         scorecard.Scorecard("Einser", 0, 20, False,0,False),
         scorecard.Scorecard("Zweier", 0, 80, False,0,False),
@@ -23,8 +41,110 @@ class Game:
         scorecard.Scorecard("Kniffel", 0, 680, False,0,False),
         scorecard.Scorecard("Chance", 0, 740, False,0,False),
         ]
+    
+    def create_dices(self):
+        self.dices.append(dice.Dice(1, False, 20, {"x": 10, "y": 10}, "white",  20, 20))
+        self.dices.append(dice.Dice(2, False, 20, {"x": 10, "y": 10}, "white", 120, 20))
+        self.dices.append(dice.Dice(3, False, 20, {"x": 10, "y": 10}, "white", 220, 20))
+        self.dices.append(dice.Dice(4, False, 20, {"x": 10, "y": 10}, "white", 320, 20))
+        self.dices.append(dice.Dice(5, False, 20, {"x": 10, "y": 10}, "white", 420, 20))
+    
+    def create_player_list(self):
+        player_number = self.choose_player_count(self.window, self.font)
+
+        for i in range(player_number):
+            name = self.get_player_name(self.window, self.font, i+1)
+            self.player_list.append(player.Player(self.create_scoreboard(), name, False, "easy", False, 0))
+    
+    def main_game(self):
+        self.create_dices()
+        self.create_player_list()
+       
+
+        for i in range(len(self.dices)):
+            self.dices[i].roll_dice()
+
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+                #Bei Escape wird die Fester auf geschlossen
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: 
+                    self.running = False
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.button.collidepoint(event.pos):
+                        if self.rolls_left > 0:
+                            self.rolls_left = self.rolls_left - 1
+                            for i in range(len(self.dices)):
+                                self.dices[i].roll_dice()
+                                self.dices[i].roll_dice()
+                                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for dice in self.dices:
+                        if dice.rect.collidepoint(event.pos):
+                            if dice.fixed == True:
+                                dice.fixed = False
+                            else:
+                                dice.fixed = True
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for row in self.player_list[self.current_player].scorecard:
+                        if row.rect.collidepoint(event.pos):
+                            if row.locked == False:
+                                row.value = row.possible_value
+                                row.locked = True
+
+                                if all(r.locked for r in self.player_list[self.current_player].scorecard) == True:
+                                    self.player_list[self.current_player].sum_score()
+                                    
+                                    
+                                if all(all(row.locked for row in p.scorecard) for p in self.player_list):
+                                    self.won(self.window, self.font, self.player_list)
+
+                                self.current_player = (self.current_player + 1) % len(self.player_list)
+                                self.rolls_left = 2
+
+                                for d in self.dices:
+                                    d.fixed = False
+
+                                for i in range(len(self.dices)):
+                                    self.dices[i].roll_dice()
+                                
+
+            #Hintergrundfarbe
+            # self.window.blit(self.background, (0,0))
+            self.window.fill("black")
+
+            player_text = self.font.render(f"Spieler: {self.player_list[self.current_player].name}", True, (255,255,255))
+            self.window.blit(player_text, (20, 120))
+
+            roll_text = self.font.render(f"Würfe übrig: {self.rolls_left}", True, (0,0,255))
+            self.window.blit(roll_text, (20, 160))
+
+            #Würfel zeichnen
+            for i in range(len(self.dices)):
+                self.dices[i].draw(self.window,self.font)
+
+            for row in self.player_list[self.current_player].scorecard:
+                counts, values, total = self.dice_cup.counts()
+                row.possible_score(counts, values, total)
+                row.draw(self.window, self.font)
+
+            #Button für würfeln
+            pygame.draw.rect(self.window, "white", self.button)
+
+            text = self.font.render("Würfeln", True, (0, 0, 0))
+            text_rect = text.get_rect(center=self.button.center)
+            self.window.blit(text, text_rect)
+        
+            pygame.display.update()
 
     def choose_player_count(self, window, font):
+        """Die Funktion zeigt ein Auswahlmenü an, 
+        in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
+        und gibt diese anschließend zurück."""
         one_btn   = pygame.Rect(500, 250, 300, 60)
         two_btn   = pygame.Rect(500, 330, 300, 60)
         three_btn = pygame.Rect(500, 410, 300, 60)
@@ -60,6 +180,9 @@ class Game:
             pygame.display.update()
         
     def get_player_name(self, window, font, number):
+        """Die Funktion zeigt ein Eingabefeld an, in das der Spieler seinen Namen eintippen kann, 
+        verarbeitet Tastatureingaben und gibt den eingegebenen Namen zurück, 
+        sobald Enter gedrückt wird."""
         name = ""
         input_box = pygame.Rect(450, 350, 400, 60)
 
@@ -92,11 +215,11 @@ class Game:
         
 
     def won(self, win, font, player_list):
-
+        """Die Funktion zeigt den Endbildschirm an, listet alle Spieler mit ihren finalen Punktzahlen auf, 
+        ermittelt den Spieler mit der höchsten Punktzahl und blendet ihn als Gewinner ein."""
         max_score = 0
         max_name = ""
        
-        
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

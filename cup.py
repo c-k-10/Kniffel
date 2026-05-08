@@ -1,20 +1,22 @@
+
+# === Klasse Cup ===
 class Cup:
     def __init__(self, dice_list:list):
         self.dice_list = dice_list
 
-    def roll_dices():
-        pass
-
-    def reset():
-        pass 
-
     
     def counts(self):
-        c = [0] * 7
+        """Die Funktion zählt für jeden Würfel die Häufigkeit seiner Augenzahl, 
+        speichert alle gewürfelten Werte und berechnet daraus die Gesamtsumme"""
+
+        c = [0, 0, 0, 0, 0, 0, 0] #Häufigkeit
+        values = [] #gewürfelte Werte
+        total = 0 #Gesamtsumme
+
         for d in self.dice_list:
-            c[d.value] += 1
-    
-        values = [d.value for d in self.dice_list]
-        total = sum(values)
+            value = d.value         
+            values.append(value)   
+            total += value         
+            c[value] += 1          
 
         return c, values, total

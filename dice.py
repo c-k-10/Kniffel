@@ -1,6 +1,8 @@
+#=== Imports ===
 import pygame
 import random
 
+#=== Klasse Dice ===
 class Dice: 
     def __init__(self, value:int, fixed:bool, size:int, position:dict, color:str, x:int, y:int):
         self._value = value
@@ -10,7 +12,6 @@ class Dice:
         self.color = color
         self.x = x
         self.y = y
-
         self.rect = pygame.Rect(self.x, self.y, 80,80)
 
     @property
@@ -21,16 +22,18 @@ class Dice:
     def value(self, v):
         self._value = v
 
-    def roll_dice(self):
-            if self.fixed == False:
-                rand_num = random.randint(1,6)
-                self.value = rand_num
-
-    def show():
-        pass
-
+    # def roll_dice(self):
+    #     """Die Funktion würfelt einen neuen Wert zwischen 1 und 6, 
+    #     sofern der Würfel nicht fixiert ist, und speichert ihn als aktuellen Würfelwert."""
+    #     if self.fixed == False:
+    #         rand_num = random.randint(1,6)
+    #         self.value = rand_num
 
     def roll_dice(self):
+        """Die Funktion startet den Würfel‑Animationsvorgang, 
+        sofern der Würfel nicht fixiert ist, indem sie die Animation aktiviert 
+        und die Anzahl der Animations‑Frames setzt."""
+
         if self.fixed:
             return
 
@@ -40,13 +43,14 @@ class Dice:
   
 
     def draw(self, window, font):
+        """Die Funktion zeichnet den Würfel, führt bei Bedarf die Roll‑Animation aus, 
+        markiert fixierte Würfel mit einem blauen Rahmen 
+        und rendert anschließend die passenden Punkte entsprechend des aktuellen Würfelwerts."""
         # === Animation ===
         if getattr(self, "animating", False):
-            import random
             self.value = random.randint(1, 6)
 
-            # ⭐ Animation verlangsamen
-            pygame.time.delay(60)   # 60 ms pro Frame → schön langsam
+            pygame.time.delay(60)   
 
             self.animation_frames -= 1
 
@@ -57,7 +61,7 @@ class Dice:
         # === Würfel-Hintergrund ===
         pygame.draw.rect(window, "white", self.rect, border_radius=8)
 
-        # ⭐ Fixierter Würfel → blauer Rahmen
+        #Fixierter Würfel → blauer Rahmen
         if self.fixed:
             pygame.draw.rect(window, (0, 0, 255), self.rect, width=4, border_radius=8)
 
@@ -82,6 +86,3 @@ class Dice:
 
         for (px, py) in positions[self.value]:
             pygame.draw.circle(window, "black", (px, py), r)
-
-
-
