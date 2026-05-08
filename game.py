@@ -171,7 +171,7 @@ class Game:
         spiel_info = (
         "Kniffel - Spielinfo\n\n"
         "Kniffel wird mit 5 Würfeln gespielt.\n"
-        "Du hast pro Runde bis zu 3 Würfe und kannst nach jedem Wurf Würfel festhalten.\n"
+        "Du hast pro Runde 3 Würfe und kannst nach jedem Wurf Würfel festhalten.\n"
         "Danach musst du eine Kategorie wählen.\n\n"
         "Oberer Teil:\n"
         "- Einser bis Sechser\n"
@@ -209,7 +209,7 @@ class Game:
             lines = spiel_info.split("\n")
             for i, line in enumerate(lines):
                 rendered = font.render(line, True, (255,255,255))
-                window.blit(rendered, (1300, 200 + i * rendered.get_height()))
+                window.blit(rendered, (window.get_width() - (window.get_width() * 0.50), 300 + i * rendered.get_height()))
 
             h_font = head_font.render("Willkommen bei Kniffel!", True, (255,255,255))
             window.blit(h_font, (200,100))
