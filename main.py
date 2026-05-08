@@ -1,3 +1,4 @@
+# === IMPORTS ====
 import pygame
 import cup
 import dice
@@ -5,42 +6,23 @@ import game
 import player
 import scorecard
 
+# === Fenster erstellen ===
 pygame.init()
 window = pygame.display.set_mode((1300,800))
 pygame.display.set_caption("Kniffel")
 font = pygame.font.SysFont("comicsansms", 28, bold=True)
 background = pygame.image.load("background.png")
 background = pygame.transform.scale(background, (1300, 800))
-
-button = pygame.Rect(20,730,130,50) 
-
 running = True
 
-players = []
+# === Button zum Würfeln erstellen ===
+button = pygame.Rect(20,730,130,50) 
+
+player_list = []
 dices = []
 
-score_card = [
-    scorecard.Scorecard("Einser", 0, 20),
-    scorecard.Scorecard("Zweier", 0, 80),
-    scorecard.Scorecard("Dreier", 0, 140),
-    scorecard.Scorecard("Vierer", 0, 200),
-    scorecard.Scorecard("Fünfer", 0, 260),
-    scorecard.Scorecard("Sechser", 0, 320),
-    scorecard.Scorecard("Dreierpasch", 0, 380),
-    scorecard.Scorecard("Viererpasch", 0, 440),
-    scorecard.Scorecard("Full House", 0, 500),
-    scorecard.Scorecard("Kleine Straße", 0, 560),
-    scorecard.Scorecard("Große Straße", 0, 620),
-    scorecard.Scorecard("Kniffel", 0, 680),
-    scorecard.Scorecard("Chance", 0, 740),
-]
-
-
-
-# scorecard = scorecard.Scorecard(score_card)
-
-players.append(player.Player(scorecard, "Henry", False, "easy"))
-players.append(player.Player(scorecard, "Henryson", False, "easy"))
+current_player = 0
+rolls_left = 3
 
 dices.append(dice.Dice(1, False, 20, {"x": 10, "y": 10}, "white",  20, 20))
 dices.append(dice.Dice(2, False, 20, {"x": 10, "y": 10}, "white", 120, 20))
@@ -49,8 +31,15 @@ dices.append(dice.Dice(4, False, 20, {"x": 10, "y": 10}, "white", 320, 20))
 dices.append(dice.Dice(5, False, 20, {"x": 10, "y": 10}, "white", 420, 20))
 
 cup = cup.Cup(dices)
-game = game.Game(players, cup, window)
+game = game.Game(player_list, cup, window)
 
+player_number = game.choose_player_count(window, font)
+
+for i in range(player_number):
+    name = game.get_player_name(window, font, i+1)
+    player_list.append(player.Player(game.create_scoreboard(), name, False, "easy"))
+
+# === MAIN SCHLEIFE ===
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -77,11 +66,16 @@ while running:
     #Hintergrundfarbe
     window.blit(background, (0,0))
 
+    player_text = font.render(f"Spieler: {player_list[current_player].name}", True, (255,255,255))
+    window.blit(player_text, (20, 120))
+
     #Würfel zeichnen
     for i in range(len(dices)):
         dices[i].draw(window,font)
 
-    for row in score_card:
+    for row in player_list[current_player].scorecard:
+        counts, values, total = cup.counts()
+        row.possible_score(counts, values, total)
         row.draw(window, font)
 
     #Button für würfeln

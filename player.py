@@ -1,3 +1,5 @@
+import pygame
+
 class Player:
     def __init__(self, scorecard, name:str, is_human:bool, ai_difficulty:str):
         self.scorecard = scorecard
@@ -13,3 +15,5 @@ class Player:
 
     def reset():
         pass
+
+    
