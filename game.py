@@ -10,18 +10,19 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Kniffel")
-        self.player_list = []
         self.button = pygame.Rect(20,730,130,50)
         self.running = True
+        #Schriftarten
         self.font = pygame.font.SysFont("comicsansms", 20, bold=True)
         self.head_font = pygame.font.SysFont("comicsansms", 35, bold=True)
         # self.window = pygame.display.set_mode((1300,800))
-        self.window = pygame.display.set_mode((1600,900))
+        self.window = pygame.display.set_mode((1400,800))
         # self.background = pygame.image.load("background.png")
         # self.background = pygame.transform.scale(self.background, (1300, 800))
         self.current_player = 0
         self.rolls_left = 2
         self.dices = []
+        self.player_list = []
         self.dice_cup = cup.Cup(self.dices)
 
     def create_scoreboard(self):
@@ -162,12 +163,13 @@ class Game:
         """Die Funktion zeigt ein Auswahlmenü an, 
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
+
         one_btn   = pygame.Rect(300, 350, 300, 60)
         two_btn   = pygame.Rect(300, 430, 300, 60)
         three_btn = pygame.Rect(300, 510, 300, 60)
         four_btn  = pygame.Rect(300, 590, 300, 60)
 
-        spiel_info = (
+        game_info = (
         "Kniffel - Spielinfo\n\n"
         "Kniffel wird mit 5 Würfeln gespielt.\n"
         "Du hast pro Runde 3 Würfe und kannst \nnach jedem Wurf Würfel festhalten.\n"
@@ -203,23 +205,28 @@ class Game:
             #Hintergrundfarbe
             window.fill((20,20,20))
 
-            lines = spiel_info.split("\n")
+            #Aufgabe der Spiel Infos
+            lines = game_info.split("\n")
             line_height = font.get_height() + 5 
             for i, line in enumerate(lines):
                 rendered = font.render(line, True, (255,255,255))
                 window.blit(rendered, (1000, 110 + i * line_height))
 
+            #Ausgabe der Überschrift
             h_font = head_font.render("Willkommen bei Kniffel!", True, (80,180,255))
             window.blit(h_font, (200,100))
 
+            #Ausgabe "Wie viele Spieler?"
             title = font.render("Wie viele Spieler?", True, (255,255,255))
             window.blit(title, (300, 250))
 
+            #Buttons anzeigen
             pygame.draw.rect(window, "white", one_btn)
             pygame.draw.rect(window, "white", two_btn)
             pygame.draw.rect(window, "white", three_btn)
             pygame.draw.rect(window, "white", four_btn)
 
+            #Beschriftung der Button anzeigen
             window.blit(font.render("1 Spieler", True, (0,0,0)), (one_btn.x+40, one_btn.y+10))
             window.blit(font.render("2 Spieler", True, (0,0,0)), (two_btn.x+40, two_btn.y+10))
             window.blit(font.render("3 Spieler", True, (0,0,0)), (three_btn.x+40, three_btn.y+10))
@@ -272,8 +279,9 @@ class Game:
                     pygame.quit()
                     exit()
 
-                if event.type == pygame.KEYDOWN:
-                    pass
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: 
+                    pygame.quit()
+                    exit()
 
             win.fill((20,20,20))
 
