@@ -16,7 +16,7 @@ class Game:
         self.font = pygame.font.SysFont("comicsansms", 20, bold=True)
         self.head_font = pygame.font.SysFont("comicsansms", 35, bold=True)
         # self.window = pygame.display.set_mode((1300,800))
-        self.window = pygame.display.set_mode((1600,900))
+        self.window = pygame.display.set_mode((1500,900))
         # self.background = pygame.image.load("background.png")
         # self.background = pygame.transform.scale(self.background, (1300, 800))
         self.current_player = 0
