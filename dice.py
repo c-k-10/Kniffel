@@ -5,14 +5,14 @@ import random
 #=== Klasse Dice ===
 class Dice: 
     def __init__(self, value:int, fixed:bool, size:int, position:dict, color:str, x:int, y:int):
-        self._value = value
-        self.fixed = fixed
+        self._value = value #Augenzahl des Würfels
+        self.fixed = fixed #Boolean ob der Würfel fixiert wurde oder nicht
         self.size = size
         self.position = position
-        self.color = color
-        self.x = x
-        self.y = y
-        self.rect = pygame.Rect(self.x, self.y, 80,80)
+        self.color = color #Farbe des Würfels
+        self.x = x #x-Koordinate
+        self.y = y #y-Koordinate
+        self.rect = pygame.Rect(self.x, self.y, 80,80) #Rechteck mit den Werten erstellen
 
     @property
     def value(self):
@@ -22,23 +22,18 @@ class Dice:
     def value(self, v):
         self._value = v
 
-    # def roll_dice(self):
-    #     """Die Funktion würfelt einen neuen Wert zwischen 1 und 6, 
-    #     sofern der Würfel nicht fixiert ist, und speichert ihn als aktuellen Würfelwert."""
-    #     if self.fixed == False:
-    #         rand_num = random.randint(1,6)
-    #         self.value = rand_num
 
     def roll_dice(self):
         """Die Funktion startet den Würfel‑Animationsvorgang, 
         sofern der Würfel nicht fixiert ist, indem sie die Animation aktiviert 
         und die Anzahl der Animations‑Frames setzt."""
 
-        if self.fixed:
+        if self.fixed: 
+            #Falls der Würfel fixiert ist, soll keine Animation stattfinden 
             return
 
-        self.animating = True
-        self.animation_frames = 5
+        self.animating = True #Animation aktivieren 
+        self.animation_frames = 5 #Animation dauert 5 Frames
 
   
 
@@ -76,8 +71,9 @@ class Dice:
         # === Punkte zeichnen ===
         cx = temp_rect.x + temp_rect.width // 2
         cy = temp_rect.y + temp_rect.height // 2
-        r = 6
-
+        r = 6 #Radius
+        
+        #Position der Punkte für die jeweilige Zahl
         positions = {
             1: [(cx, cy)],
             2: [(cx - 20, cy - 20), (cx + 20, cy + 20)],
@@ -92,5 +88,6 @@ class Dice:
                 (cx - 20, cy + 20), (cx + 20, cy + 20)],
         }
 
+        #Ausgabe/Zeichnen der Punkte der Würfel
         for (px, py) in positions[self.value]:
             pygame.draw.circle(window, "black", (px, py), r)
