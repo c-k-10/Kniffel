@@ -32,7 +32,7 @@ class Game:
         self.head_font = pygame.font.SysFont("comicsansms", self.font_size + 15, bold=True)
        
         # --- Kreis (z.B. für Würfelbereich) ---
-        self.circle_radius = int(350 * self.scale)
+        self.circle_radius = int(250)
         circle_center = (self.width // 2, self.height // 2)
 
         # --- Beispiel-Würfel (einfaches Quadrat) ---
