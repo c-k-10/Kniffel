@@ -31,9 +31,8 @@ class Game:
         self.font = pygame.font.SysFont("comicsansms", self.font_size, bold=True)
         self.head_font = pygame.font.SysFont("comicsansms", self.font_size + 15, bold=True)
        
-        # --- Kreis (z.B. für Würfelbereich) ---
-        self.circle_radius = int(250)
-        circle_center = (self.width // 2, self.height // 2)
+        # --- Kreis ---
+        self.circle_radius = int(250 + (self.height / 100 * 1))
 
         # --- Beispiel-Würfel (einfaches Quadrat) ---
         dice_size = int(120 * self.scale)
@@ -287,14 +286,17 @@ class Game:
             window.fill((20,20,20))
 
             h_font = self.head_font.render("Spielernamen eingeben:", True, (80,180,255))
-            window.blit(h_font, (self.width * 0.15,self.height * 0.20))
+            window.blit(h_font, (self.width * 0.15, self.height * 0.20))
 
             title = font.render(f"Name für Spieler {number} eingeben:", True, (255,255,255))
-            window.blit(title, ((self.width // 2) - 200, (self.height // 2) - 100))
+            window.blit(title, ((self.width // 2) - 200, (self.height // 2) - self.font_size * 2))
 
             pygame.draw.rect(window, "white", input_box, 2)
             name_surface = font.render(name, True, (255,255,255))
             window.blit(name_surface, (input_box.x + 10, input_box.y + 10))
+
+            text = font.render("Mit Enter weiter...", True, (255,255,255))
+            window.blit(text, ((self.width // 2) - 200, (self.height // 2) + self.font_size * 4))
 
             pygame.display.update()
 
