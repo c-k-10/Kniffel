@@ -30,12 +30,9 @@ class Game:
         self.font_size = int(25 * self.scale)
         self.font = pygame.font.SysFont("comicsansms", self.font_size, bold=True)
         self.head_font = pygame.font.SysFont("comicsansms", self.font_size + 15, bold=True)
-    
-        # self.background = pygame.image.load("background.png")
-        # self.background = pygame.transform.scale(self.background, (1300, 800))
        
         # --- Kreis (z.B. für Würfelbereich) ---
-        circle_radius = int(250 * self.scale)
+        self.circle_radius = int(350 * self.scale)
         circle_center = (self.width // 2, self.height // 2)
 
         # --- Beispiel-Würfel (einfaches Quadrat) ---
@@ -54,19 +51,19 @@ class Game:
         """Die Funktion erzeugt eine vollständige Liste aller Scoreboard‑Einträge für Kniffel, 
         wobei jeder Eintrag mit Namen, Startwerten und seiner festen Bildschirmposition initialisiert wird."""
         return [
-        scorecard.Scorecard("Einser", 0, 20, False,0,False),
-        scorecard.Scorecard("Zweier", 0, 80, False,0,False),
-        scorecard.Scorecard("Dreier", 0, 140, False,0,False),
-        scorecard.Scorecard("Vierer", 0, 200, False,0,False),
-        scorecard.Scorecard("Fünfer", 0, 260, False,0,False),
-        scorecard.Scorecard("Sechser", 0, 320, False,0,False),
-        scorecard.Scorecard("Dreierpasch", 0, 380, False,0,False),
-        scorecard.Scorecard("Viererpasch", 0, 440, False,0,False),
-        scorecard.Scorecard("Full House", 0, 500, False,0,False),
-        scorecard.Scorecard("Kleine Straße", 0, 560, False,0,False),
-        scorecard.Scorecard("Große Straße", 0, 620, False,0,False),
-        scorecard.Scorecard("Kniffel", 0, 680, False,0,False),
-        scorecard.Scorecard("Chance", 0, 740, False,0,False),
+        scorecard.Scorecard("Einser", 0, 40, False,0,False, self),
+        scorecard.Scorecard("Zweier", 0, 100, False,0,False, self),
+        scorecard.Scorecard("Dreier", 0, 160, False,0,False, self),
+        scorecard.Scorecard("Vierer", 0, 220, False,0,False, self),
+        scorecard.Scorecard("Fünfer", 0, 280, False,0,False, self),
+        scorecard.Scorecard("Sechser", 0, 340, False,0,False, self),
+        scorecard.Scorecard("Dreierpasch", 0, 400, False,0,False, self),
+        scorecard.Scorecard("Viererpasch", 0, 460, False,0,False, self),
+        scorecard.Scorecard("Full House", 0, 520, False,0,False, self),
+        scorecard.Scorecard("Kleine Straße", 0, 580, False,0,False, self),
+        scorecard.Scorecard("Große Straße", 0, 640, False,0,False, self),
+        scorecard.Scorecard("Kniffel", 0, 700, False,0,False, self),
+        scorecard.Scorecard("Chance", 0, 760, False,0,False, self),
         ]
     
     def create_dices(self):
@@ -154,15 +151,17 @@ class Game:
                                 
 
             #Hintergrundfarbe
-            # self.window.blit(self.background, (0,0))
-            self.window.fill((0,0,0))
+            self.window.fill((20,20,20))
 
-            pygame.draw.circle(self.window, (30, 77, 30), (300, 300), 250)
+            #Würfelfeld zeichnen
+            pygame.draw.circle(self.window, (30, 77, 30), (300, 300), self.circle_radius)
+            pygame.draw.circle(self.window, (78, 52, 39), (300,300), self.circle_radius, 20)
 
-
+            #Spielernamen ausgeben
             player_text = self.font.render(f"Spieler: {self.player_list[self.current_player].name}", True, (255,255,255))
             self.window.blit(player_text, (550, 120))
 
+            #Übrige Würfe anzeigen
             roll_text = self.font.render(f"Würfe übrig: {self.rolls_left}", True, (0,0,255))
             self.window.blit(roll_text, (550, 160))
 

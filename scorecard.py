@@ -1,23 +1,13 @@
 import pygame
 
 class Scorecard:
-    def __init__(self, name, value, y, possible:bool,possible_value:int, locked):
+    def __init__(self, name, value, y, possible:bool,possible_value:int, locked, game):
         self.name = name
         self.value = value
-        self.rect = pygame.Rect(970, y, 300, 50)
+        self.rect = pygame.Rect(game.width - (game.width / 100 * 25), y, 300, 50)
         self.possible = possible
         self.possible_value = possible_value
         self.locked = locked
-
-    def has_bonus():
-        pass
-
-    def sum():
-        pass
-
-    def score_points_on_scorecard():
-        pass
-
 
     def draw(self, win, font):
         if self.possible == True:
