@@ -8,17 +8,42 @@ import player
 #=== Klasse Game ===
 class Game:
     def __init__(self):
+        #Pygame Initalisierung
         pygame.init()
         pygame.display.set_caption("Kniffel")
-        self.button = pygame.Rect(20,730,130,50)
-        self.running = True
-        self.font = pygame.font.SysFont("comicsansms", 20, bold=True)
-        self.head_font = pygame.font.SysFont("comicsansms", 35, bold=True)
         self.window = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-        # self.background = pygame.image.load("background.png")
-        # self.background = pygame.transform.scale(self.background, (1300, 800))
+        self.running = True
+
         self.width = self.window.get_width()
         self.height = self.window.get_height()
+
+        # --- Basisauflösung für Skalierung ---
+        BASE_WIDTH = 1920
+        BASE_HEIGHT = 1080
+
+        scale_x = self.width / BASE_WIDTH
+        scale_y = self.height / BASE_HEIGHT
+        self.scale = min(scale_x, scale_y)
+
+        self.button = pygame.Rect(20,730,130,50)
+        
+        font_size = int(22 * self.scale)
+        self.font = pygame.font.SysFont("comicsansms", font_size, bold=True)
+        self.head_font = pygame.font.SysFont("comicsansms", font_size + 15, bold=True)
+    
+        # self.background = pygame.image.load("background.png")
+        # self.background = pygame.transform.scale(self.background, (1300, 800))
+       
+        # --- Kreis (z.B. für Würfelbereich) ---
+        circle_radius = int(250 * self.scale)
+        circle_center = (self.width // 2, self.height // 2)
+
+        # --- Beispiel-Würfel (einfaches Quadrat) ---
+        dice_size = int(120 * self.scale)
+        dice_x = int(800 * scale_x)
+        dice_y = int(500 * scale_y)
+        dice_rect = pygame.Rect(dice_x, dice_y, dice_size, dice_size)
+
         self.current_player = 0
         self.rolls_left = 2
         self.dices = []
@@ -164,10 +189,10 @@ class Game:
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
 
-        one_btn   = pygame.Rect(300, 350, 300, 60)
-        two_btn   = pygame.Rect(300, 430, 300, 60)
-        three_btn = pygame.Rect(300, 510, 300, 60)
-        four_btn  = pygame.Rect(300, 590, 300, 60)
+        one_btn   = pygame.Rect(self.width * 0.20, self.height * 0.25, 300, 60)
+        two_btn   = pygame.Rect(self.width * 0.20, self.height * 0.30, 300, 60)
+        three_btn = pygame.Rect(self.width * 0.20, self.height * 0.35, 300, 60)
+        four_btn  = pygame.Rect(self.width * 0.20, self.height * 0.40, 300, 60)
 
         game_info = (
         "Kniffel - Spielinfo\n\n"
@@ -207,18 +232,18 @@ class Game:
 
             #Aufgabe der Spiel Infos
             lines = game_info.split("\n")
-            line_height = font.get_height() + 5 
+            line_height = font.get_height() + 5
             for i, line in enumerate(lines):
                 rendered = font.render(line, True, (255,255,255))
-                window.blit(rendered, (1000, 110 + i * line_height))
+                window.blit(rendered, (self.width * 0.60, (self.height * 0.15) + i * line_height))
 
             #Ausgabe der Überschrift
             h_font = head_font.render("Willkommen bei Kniffel!", True, (80,180,255))
-            window.blit(h_font, (200,100))
+            window.blit(h_font, (self.width * 0.15,self.height * 0.10))
 
             #Ausgabe "Wie viele Spieler?"
             title = font.render("Wie viele Spieler?", True, (255,255,255))
-            window.blit(title, (300, 250))
+            window.blit(title, (self.width * 0.20, self.height * 0.19))
 
             #Buttons anzeigen
             pygame.draw.rect(window, "white", one_btn)
