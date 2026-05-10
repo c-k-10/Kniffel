@@ -12,17 +12,13 @@ class Game:
         pygame.display.set_caption("Kniffel")
         self.button = pygame.Rect(20,730,130,50)
         self.running = True
-        #Schriftarten
         self.font = pygame.font.SysFont("comicsansms", 20, bold=True)
         self.head_font = pygame.font.SysFont("comicsansms", 35, bold=True)
-        # self.window = pygame.display.set_mode((1300,800))
-<<<<<<< HEAD
-        self.window = pygame.display.set_mode((1500,900))
-=======
-        self.window = pygame.display.set_mode((1400,800))
->>>>>>> 2cb9abb7756d171efe31d92203102a57877c844a
+        self.window = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         # self.background = pygame.image.load("background.png")
         # self.background = pygame.transform.scale(self.background, (1300, 800))
+        self.width = self.window.get_width()
+        self.height = self.window.get_height()
         self.current_player = 0
         self.rolls_left = 2
         self.dices = []
