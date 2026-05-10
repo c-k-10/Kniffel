@@ -69,8 +69,8 @@ class Game:
     def create_dices(self):
         import math
 
-        center_x = 300
-        center_y = 300
+        center_x = self.width * 0.20 
+        center_y = self.height * 0.35
         radius = 130      # Abstand vom Mittelpunkt
         offset = 40       # halbe Würfelgröße (für korrekte Zentrierung)
 
@@ -154,8 +154,8 @@ class Game:
             self.window.fill((20,20,20))
 
             #Würfelfeld zeichnen
-            pygame.draw.circle(self.window, (30, 77, 30), (300, 300), self.circle_radius)
-            pygame.draw.circle(self.window, (78, 52, 39), (300,300), self.circle_radius, 20)
+            pygame.draw.circle(self.window, (30, 77, 30), (self.width * 0.20, self.height * 0.35), self.circle_radius)
+            pygame.draw.circle(self.window, (78, 52, 39), (self.width * 0.20, self.height * 0.35), self.circle_radius, 20)
 
             #Spielernamen ausgeben
             player_text = self.font.render(f"Spieler: {self.player_list[self.current_player].name}", True, (255,255,255))
