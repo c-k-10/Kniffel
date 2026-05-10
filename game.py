@@ -27,7 +27,7 @@ class Game:
 
         self.button = pygame.Rect(20,730,130,50)
         
-        font_size = int(22 * self.scale)
+        font_size = int(25 * self.scale)
         self.font = pygame.font.SysFont("comicsansms", font_size, bold=True)
         self.head_font = pygame.font.SysFont("comicsansms", font_size + 15, bold=True)
     
@@ -189,10 +189,10 @@ class Game:
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
 
-        one_btn   = pygame.Rect(self.width * 0.20, self.height * 0.25, 300, 60)
-        two_btn   = pygame.Rect(self.width * 0.20, self.height * 0.30, 300, 60)
-        three_btn = pygame.Rect(self.width * 0.20, self.height * 0.35, 300, 60)
-        four_btn  = pygame.Rect(self.width * 0.20, self.height * 0.40, 300, 60)
+        one_btn   = pygame.Rect(self.width * 0.20, self.height * 0.25 + self.scale, 300, 60)
+        two_btn   = pygame.Rect(self.width * 0.20, self.height * 0.30 + self.scale, 300, 60)
+        three_btn = pygame.Rect(self.width * 0.20, self.height * 0.35 + self.scale, 300, 60)
+        four_btn  = pygame.Rect(self.width * 0.20, self.height * 0.40 + self.scale, 300, 60)
 
         game_info = (
         "Kniffel - Spielinfo\n\n"
