@@ -23,13 +23,13 @@ class Game:
 
         scale_x = self.width / BASE_WIDTH
         scale_y = self.height / BASE_HEIGHT
-        self.scale = min(scale_x, scale_y)
+        self.scale = min(scale_x, scale_y) 
 
         self.button = pygame.Rect(20,730,130,50)
         
-        font_size = int(25 * self.scale)
-        self.font = pygame.font.SysFont("comicsansms", font_size, bold=True)
-        self.head_font = pygame.font.SysFont("comicsansms", font_size + 15, bold=True)
+        self.font_size = int(25 * self.scale)
+        self.font = pygame.font.SysFont("comicsansms", self.font_size, bold=True)
+        self.head_font = pygame.font.SysFont("comicsansms", self.font_size + 15, bold=True)
     
         # self.background = pygame.image.load("background.png")
         # self.background = pygame.transform.scale(self.background, (1300, 800))
@@ -189,10 +189,14 @@ class Game:
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
 
-        one_btn   = pygame.Rect(self.width * 0.20, self.height * 0.25 + 20, 300, 60)
-        two_btn   = pygame.Rect(self.width * 0.20, self.height * 0.30 + 20, 300, 60)
-        three_btn = pygame.Rect(self.width * 0.20, self.height * 0.35 + 20, 300, 60)
-        four_btn  = pygame.Rect(self.width * 0.20, self.height * 0.40 + 20, 300, 60)
+        start_y = self.height * 0.25
+        spacing = self.height * 0.07   # 10% Abstand zwischen Buttons
+
+        one_btn   = pygame.Rect(self.width * 0.20, start_y + spacing * 0, 300, self.font_size + 25)
+        two_btn   = pygame.Rect(self.width * 0.20, start_y + spacing * 1, 300, self.font_size + 25)
+        three_btn = pygame.Rect(self.width * 0.20, start_y + spacing * 2, 300, self.font_size + 25)
+        four_btn  = pygame.Rect(self.width * 0.20, start_y + spacing * 3, 300, self.font_size + 25)
+
 
         game_info = (
         "Kniffel - Spielinfo\n\n"
