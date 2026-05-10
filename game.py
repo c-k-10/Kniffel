@@ -189,10 +189,10 @@ class Game:
         in dem der Spieler per Mausklick die gewünschte Spieleranzahl wählen kann, 
         und gibt diese anschließend zurück."""
 
-        one_btn   = pygame.Rect(self.width * 0.20, self.height * 0.25 + ( 5 * self.scale), 300, 60)
-        two_btn   = pygame.Rect(self.width * 0.20, self.height * 0.30 + ( 5 * self.scale), 300, 60)
-        three_btn = pygame.Rect(self.width * 0.20, self.height * 0.35 + ( 5 * self.scale), 300, 60)
-        four_btn  = pygame.Rect(self.width * 0.20, self.height * 0.40 + ( 5 * self.scale), 300, 60)
+        one_btn   = pygame.Rect(self.width * 0.20, self.height * 0.25 + 20, 300, 60)
+        two_btn   = pygame.Rect(self.width * 0.20, self.height * 0.30 + 20, 300, 60)
+        three_btn = pygame.Rect(self.width * 0.20, self.height * 0.35 + 20, 300, 60)
+        four_btn  = pygame.Rect(self.width * 0.20, self.height * 0.40 + 20, 300, 60)
 
         game_info = (
         "Kniffel - Spielinfo\n\n"
@@ -264,7 +264,7 @@ class Game:
         verarbeitet Tastatureingaben und gibt den eingegebenen Namen zurück, 
         sobald Enter gedrückt wird."""
         name = ""
-        input_box = pygame.Rect(450, 350, 400, 60)
+        input_box = pygame.Rect((self.width // 2) - 200, self.height // 2, 450, 60)
 
         while True:
             for event in pygame.event.get():
@@ -283,8 +283,11 @@ class Game:
 
             window.fill((20,20,20))
 
+            h_font = self.head_font.render("Spielernamen eingeben:", True, (80,180,255))
+            window.blit(h_font, (self.width * 0.15,self.height * 0.20))
+
             title = font.render(f"Name für Spieler {number} eingeben:", True, (255,255,255))
-            window.blit(title, (450, 250))
+            window.blit(title, ((self.width // 2) - 200, (self.height // 2) - 100))
 
             pygame.draw.rect(window, "white", input_box, 2)
             name_surface = font.render(name, True, (255,255,255))
