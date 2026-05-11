@@ -162,10 +162,16 @@ class Game:
             for i in range(len(self.dices)):
                 self.dices[i].draw(self.window,self.font)
 
-            for row in self.player_list[self.current_player].scorecard:
+            start_y = 150
+            spacing = 90
+
+            for index, row in enumerate(self.player_list[self.current_player].scorecard):
                 counts, values, total = self.dice_cup.counts()
                 row.possible_score(counts, values, total)
-                row.draw(self.window, self.font)
+
+                y = start_y + index * spacing
+                row.draw(self.window, self.font, y)
+
 
             #Button für würfeln
             pygame.draw.rect(self.window, "white", self.button)
@@ -328,7 +334,6 @@ class Game:
             win.blit(won_text, (450, y + 50))
         
             pygame.display.update()
-
 
     def draw_vertical_gradient(self, top_color, bottom_color):
             width, height = self.window.get_size()
