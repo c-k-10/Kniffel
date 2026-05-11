@@ -1,65 +1,66 @@
 import pygame
-import sys
-
 pygame.init()
 
-# --- Fullscreen starten ---
-window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-width, height = window.get_size()
+# Fenster
+WIDTH, HEIGHT = 600, 400
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Dropdown Beispiel")
 
-# --- Basisauflösung für Skalierung ---
-BASE_WIDTH = 1920
-BASE_HEIGHT = 1080
+font = pygame.font.SysFont(None, 32)
 
-scale_x = width / BASE_WIDTH
-scale_y = height / BASE_HEIGHT
-scale = min(scale_x, scale_y)
+# Dropdown-Daten
+options = ["1 Spieler", "2 Spieler", "3 Spieler", "4 Spieler"]
+selected_option = "Spieler auswählen"
+dropdown_open = False
 
-# --- Farben ---
-WHITE = (255, 255, 255)
-BLUE = (100, 180, 255)
-GREEN = (50, 150, 50)
+# Positionen
+button_rect = pygame.Rect(50, 50, 200, 40)
+option_height = 40
 
-# --- Dynamische Schrift ---
-font_size = int(50 * scale)
-font = pygame.font.Font(None, font_size)
 
-# --- Beispiel-Text ---
-text = font.render("Hallo Chrissi! Dynamische Skalierung aktiv!", True, WHITE)
-text_rect = text.get_rect(center=(width // 2, int(100 * scale_y)))
-
-# --- Kreis (z.B. für Würfelbereich) ---
-circle_radius = int(250 * scale)
-circle_center = (width // 2, height // 2)
-
-# --- Beispiel-Würfel (einfaches Quadrat) ---
-dice_size = int(120 * scale)
-dice_x = int(800 * scale_x)
-dice_y = int(500 * scale_y)
-dice_rect = pygame.Rect(dice_x, dice_y, dice_size, dice_size)
-
-clock = pygame.time.Clock()
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                sys.exit()
-
+running = True
+while running:
     window.fill((30, 30, 30))
 
-    # Kreis zeichnen
-    pygame.draw.circle(window, GREEN, circle_center, circle_radius)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-    # Würfel zeichnen
-    pygame.draw.rect(window, BLUE, dice_rect, border_radius=10)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
 
-    # Text zeichnen
-    window.blit(text, text_rect)
+            # Hauptbutton geklickt → Dropdown öffnen/schließen
+            if button_rect.collidepoint(mouse_pos):
+                dropdown_open = not dropdown_open
 
-    pygame.display.flip()
-    clock.tick(60)
+            # Wenn Dropdown offen ist → Optionen prüfen
+            if dropdown_open:
+                for i, option in enumerate(options):
+                    rect = pygame.Rect(button_rect.x, button_rect.y + (i+1)*option_height, button_rect.width, option_height)
+                    if rect.collidepoint(mouse_pos):
+                        selected_option = option
+                        dropdown_open = False
+
+
+    # Hauptbutton zeichnen
+    pygame.draw.rect(window, (200, 200, 200), button_rect)
+    text = font.render(selected_option, True, (0, 0, 0))
+    window.blit(text, (button_rect.x + 10, button_rect.y + 8))
+
+    # Dropdown-Optionen zeichnen
+    if dropdown_open:
+        for i, option in enumerate(options):
+            rect = pygame.Rect(button_rect.x, button_rect.y + (i+1)*option_height, button_rect.width, option_height)
+
+            # Hover-Effekt
+            if rect.collidepoint(pygame.mouse.get_pos()):
+                pygame.draw.rect(window, (180, 180, 180), rect)
+            else:
+                pygame.draw.rect(window, (220, 220, 220), rect)
+
+            text = font.render(option, True, (0, 0, 0))
+            window.blit(text, (rect.x + 10, rect.y + 8))
+
+    pygame.display.update()
+
+pygame.quit()

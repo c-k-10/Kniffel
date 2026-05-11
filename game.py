@@ -25,20 +25,14 @@ class Game:
         scale_y = self.height / BASE_HEIGHT
         self.scale = min(scale_x, scale_y) 
 
-        self.button = pygame.Rect(20,730,130,50)
+        self.button = pygame.Rect(self.width * 0.20 - 65, self.height * 0.67 ,130,50)
         
-        self.font_size = int(25 * self.scale)
-        self.font = pygame.font.SysFont("comicsansms", self.font_size, bold=True)
-        self.head_font = pygame.font.SysFont("comicsansms", self.font_size + 15, bold=True)
+        self.font_size = int(32 * self.scale)
+        self.font = pygame.font.SysFont("calibri", self.font_size, bold=True)
+        self.head_font = pygame.font.SysFont("calibri", self.font_size + 15, bold=True)
        
         # --- Kreis ---
         self.circle_radius = int(250 + (self.height / 100 * 1))
-
-        # --- Beispiel-Würfel (einfaches Quadrat) ---
-        dice_size = int(120 * self.scale)
-        dice_x = int(800 * scale_x)
-        dice_y = int(500 * scale_y)
-        dice_rect = pygame.Rect(dice_x, dice_y, dice_size, dice_size)
 
         self.current_player = 0
         self.rolls_left = 2
@@ -50,19 +44,19 @@ class Game:
         """Die Funktion erzeugt eine vollständige Liste aller Scoreboard‑Einträge für Kniffel, 
         wobei jeder Eintrag mit Namen, Startwerten und seiner festen Bildschirmposition initialisiert wird."""
         return [
-        scorecard.Scorecard("Einser", 0, 40, False,0,False, self),
-        scorecard.Scorecard("Zweier", 0, 100, False,0,False, self),
-        scorecard.Scorecard("Dreier", 0, 160, False,0,False, self),
-        scorecard.Scorecard("Vierer", 0, 220, False,0,False, self),
-        scorecard.Scorecard("Fünfer", 0, 280, False,0,False, self),
-        scorecard.Scorecard("Sechser", 0, 340, False,0,False, self),
-        scorecard.Scorecard("Dreierpasch", 0, 400, False,0,False, self),
-        scorecard.Scorecard("Viererpasch", 0, 460, False,0,False, self),
-        scorecard.Scorecard("Full House", 0, 520, False,0,False, self),
-        scorecard.Scorecard("Kleine Straße", 0, 580, False,0,False, self),
-        scorecard.Scorecard("Große Straße", 0, 640, False,0,False, self),
-        scorecard.Scorecard("Kniffel", 0, 700, False,0,False, self),
-        scorecard.Scorecard("Chance", 0, 760, False,0,False, self),
+        scorecard.Scorecard("Einser", 0, 60, False,0,False, self),
+        scorecard.Scorecard("Zweier", 0, 120, False,0,False, self),
+        scorecard.Scorecard("Dreier", 0, 180, False,0,False, self),
+        scorecard.Scorecard("Vierer", 0, 240, False,0,False, self),
+        scorecard.Scorecard("Fünfer", 0, 300, False,0,False, self),
+        scorecard.Scorecard("Sechser", 0, 360, False,0,False, self),
+        scorecard.Scorecard("Dreierpasch", 0, 420, False,0,False, self),
+        scorecard.Scorecard("Viererpasch", 0, 480, False,0,False, self),
+        scorecard.Scorecard("Full House", 0, 540, False,0,False, self),
+        scorecard.Scorecard("Kleine Straße", 0, 600, False,0,False, self),
+        scorecard.Scorecard("Große Straße", 0, 660, False,0,False, self),
+        scorecard.Scorecard("Kniffel", 0, 720, False,0,False, self),
+        scorecard.Scorecard("Chance", 0, 780, False,0,False, self),
         ]
     
     def create_dices(self):
@@ -188,13 +182,12 @@ class Game:
         und gibt diese anschließend zurück."""
 
         start_y = self.height * 0.25
-        spacing = self.height * 0.07   # 10% Abstand zwischen Buttons
+        spacing = self.height * 0.07
 
         one_btn   = pygame.Rect(self.width * 0.20, start_y + spacing * 0, 300, self.font_size + 25)
         two_btn   = pygame.Rect(self.width * 0.20, start_y + spacing * 1, 300, self.font_size + 25)
         three_btn = pygame.Rect(self.width * 0.20, start_y + spacing * 2, 300, self.font_size + 25)
         four_btn  = pygame.Rect(self.width * 0.20, start_y + spacing * 3, 300, self.font_size + 25)
-
 
         game_info = (
         "Kniffel - Spielinfo\n\n"
@@ -230,7 +223,9 @@ class Game:
                     if four_btn.collidepoint(event.pos): return 4
 
             #Hintergrundfarbe
-            window.fill((20,20,20))
+            # window.fill((18, 22, 28))
+            self.draw_vertical_gradient((5, 5, 5), (45, 45, 50))
+
 
             #Aufgabe der Spiel Infos
             lines = game_info.split("\n")
@@ -333,3 +328,13 @@ class Game:
             win.blit(won_text, (450, y + 50))
         
             pygame.display.update()
+
+
+    def draw_vertical_gradient(self, top_color, bottom_color):
+            width, height = self.window.get_size()
+            for y in range(height):
+                ratio = y / height
+                r = int(top_color[0] * (1 - ratio) + bottom_color[0] * ratio)
+                g = int(top_color[1] * (1 - ratio) + bottom_color[1] * ratio)
+                b = int(top_color[2] * (1 - ratio) + bottom_color[2] * ratio)
+                pygame.draw.line(self.window, (r, g, b), (0, y), (width, y))
