@@ -1,66 +1,58 @@
 import pygame
-pygame.init()
 
-# Fenster
-WIDTH, HEIGHT = 600, 400
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Dropdown Beispiel")
+class Dropdown:
+    def __init__(self, x, y, w, h, font, main_color, hover_color, options):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.font = font
+        self.main_color = main_color
+        self.hover_color = hover_color
+        self.options = options  # [("Babyblau", (174,239,255)), ...]
+        self.open = False
+        self.selected = options[0]  # erstes Element
 
-font = pygame.font.SysFont(None, 32)
+    def draw(self, win):
+        # Hauptfeld
+        pygame.draw.rect(win, self.main_color, self.rect)
+        text = self.font.render(self.selected[0], True, (0,0,0))
+        win.blit(text, (self.rect.x + 10, self.rect.y + 8))
 
-# Dropdown-Daten
-options = ["1 Spieler", "2 Spieler", "3 Spieler", "4 Spieler"]
-selected_option = "Spieler auswählen"
-dropdown_open = False
+        # Wenn offen → Optionen anzeigen
+        if self.open:
+            for i, option in enumerate(self.options):
+                opt_rect = pygame.Rect(
+                    self.rect.x,
+                    self.rect.y + (i+1)*self.rect.height,
+                    self.rect.width,
+                    self.rect.height
+                )
 
-# Positionen
-button_rect = pygame.Rect(50, 50, 200, 40)
-option_height = 40
+                # Hover
+                color = self.hover_color if opt_rect.collidepoint(pygame.mouse.get_pos()) else self.main_color
+                pygame.draw.rect(win, color, opt_rect)
 
+                text = self.font.render(option[0], True, (0,0,0))
+                win.blit(text, (opt_rect.x + 10, opt_rect.y + 8))
 
-running = True
-while running:
-    window.fill((30, 30, 30))
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
+    def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = event.pos
+            # Klick auf Hauptfeld
+            if self.rect.collidepoint(event.pos):
+                self.open = not self.open
+                return None
 
-            # Hauptbutton geklickt → Dropdown öffnen/schließen
-            if button_rect.collidepoint(mouse_pos):
-                dropdown_open = not dropdown_open
+            # Klick auf Optionen
+            if self.open:
+                for i, option in enumerate(self.options):
+                    opt_rect = pygame.Rect(
+                        self.rect.x,
+                        self.rect.y + (i+1)*self.rect.height,
+                        self.rect.width,
+                        self.rect.height
+                    )
 
-            # Wenn Dropdown offen ist → Optionen prüfen
-            if dropdown_open:
-                for i, option in enumerate(options):
-                    rect = pygame.Rect(button_rect.x, button_rect.y + (i+1)*option_height, button_rect.width, option_height)
-                    if rect.collidepoint(mouse_pos):
-                        selected_option = option
-                        dropdown_open = False
+                    if opt_rect.collidepoint(event.pos):
+                        self.selected = option
+                        self.open = False
+                        return option  # ("Babyblau", (174,239,255))
 
-
-    # Hauptbutton zeichnen
-    pygame.draw.rect(window, (200, 200, 200), button_rect)
-    text = font.render(selected_option, True, (0, 0, 0))
-    window.blit(text, (button_rect.x + 10, button_rect.y + 8))
-
-    # Dropdown-Optionen zeichnen
-    if dropdown_open:
-        for i, option in enumerate(options):
-            rect = pygame.Rect(button_rect.x, button_rect.y + (i+1)*option_height, button_rect.width, option_height)
-
-            # Hover-Effekt
-            if rect.collidepoint(pygame.mouse.get_pos()):
-                pygame.draw.rect(window, (180, 180, 180), rect)
-            else:
-                pygame.draw.rect(window, (220, 220, 220), rect)
-
-            text = font.render(option, True, (0, 0, 0))
-            window.blit(text, (rect.x + 10, rect.y + 8))
-
-    pygame.display.update()
-
-pygame.quit()
+        return None

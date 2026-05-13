@@ -1,10 +1,10 @@
 #=== Imports ===
 import pygame
 import scorecard
-import game
 import cup
 import dice
 import player
+import math
 #=== Klasse Game ===
 class Game:
     def __init__(self):
@@ -13,11 +13,10 @@ class Game:
         pygame.display.set_caption("Kniffel")
         self.window = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.running = True
-
         self.width = self.window.get_width()
         self.height = self.window.get_height()
 
-        # --- Basisauflösung für Skalierung ---
+        #Basisauflösung für Skalierung
         BASE_WIDTH = 1920
         BASE_HEIGHT = 1080
 
@@ -25,15 +24,16 @@ class Game:
         scale_y = self.height / BASE_HEIGHT
         self.scale = min(scale_x, scale_y) 
 
+        #Button
         self.button = pygame.Rect(self.width * 0.20 - 65, self.height * 0.67 ,130,50)
-        
+
+        #Schriftarten        
         self.font_size = int(32 * self.scale)
         self.font = pygame.font.SysFont("calibri", self.font_size, bold=True)
         self.head_font = pygame.font.SysFont("calibri", self.font_size + 15, bold=True)
        
-        # --- Kreis ---
+        #Kreis
         self.circle_radius = int(250 + (self.height / 100 * 1))
-
         self.current_player = 0
         self.rolls_left = 2
         self.dices = []
@@ -60,27 +60,26 @@ class Game:
         ]
     
     def create_dices(self):
-        import math
-
+        """Diese Funktion erzeugt fünf Würfel und positioniert sie kreisförmig um das Zentrum."""
         center_x = self.width * 0.20 
         center_y = self.height * 0.35
-        radius = 130      # Abstand vom Mittelpunkt
-        offset = 40       # halbe Würfelgröße (für korrekte Zentrierung)
+        radius = 130      
+        offset = 40
 
         # 5 gleichmäßig verteilte Winkel (360° / 5 = 72°)
-        angles = [90, 162, 234, 306, 18]   # Start oben, dann im Uhrzeigersinn
+        angles = [90, 162, 234, 306, 18]  
 
         for i, angle in enumerate(angles):
             rad = math.radians(angle)
-
             x = center_x + math.cos(rad) * radius - offset
             y = center_y + math.sin(rad) * radius - offset
-
             self.dices.append(
-                dice.Dice(i+1, False, 20, {"x": 10, "y": 10}, "white", int(x), int(y))
+                dice.Dice(i+1, False, 20, {"x": 10, "y": 10}, (255,255,255), int(x), int(y))
             )
 
     def create_player_list(self):
+        """Diese Funktion erstellt die Spielerliste, indem zuerst die Spieleranzahl abgefragt 
+        und anschließend für jeden Spieler ein Name eingeholt und ein Player‑Objekt erzeugt wird."""
         player_number = self.choose_player_count(self.window, self.font, self.head_font)
 
         for i in range(player_number):
@@ -103,6 +102,7 @@ class Game:
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: 
                     self.running = False
 
+                #Button Würfeln bedrückt
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button.collidepoint(event.pos):
                         if self.rolls_left > 0:
@@ -111,6 +111,7 @@ class Game:
                                 self.dices[i].roll_dice()
                                 self.dices[i].roll_dice()
                                 
+                #Auf einen Würfel gedrückt um ihn zu fixieren
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for dice in self.dices:
                         if dice.rect.collidepoint(event.pos):
@@ -144,26 +145,26 @@ class Game:
                                 
 
             #Hintergrundfarbe
-            self.window.fill((20,20,20))
+            self.draw_vertical_gradient((18, 22, 28), (23, 27, 33))
 
             #Würfelfeld zeichnen
-            pygame.draw.circle(self.window, (30, 77, 30), (self.width * 0.20, self.height * 0.35), self.circle_radius)
-            pygame.draw.circle(self.window, (78, 52, 39), (self.width * 0.20, self.height * 0.35), self.circle_radius, 20)
+            pygame.draw.circle(self.window, (30,77,30), (self.width * 0.20, self.height * 0.35), self.circle_radius)
+            pygame.draw.circle(self.window, (78,52,39), (self.width * 0.20, self.height * 0.35), self.circle_radius, 20)
 
             #Spielernamen ausgeben
             player_text = self.font.render(f"Spieler: {self.player_list[self.current_player].name}", True, (255,255,255))
             self.window.blit(player_text, (550, 120))
 
             #Übrige Würfe anzeigen
-            roll_text = self.font.render(f"Würfe übrig: {self.rolls_left}", True, (0,0,255))
+            roll_text = self.font.render(f"Würfe übrig: {self.rolls_left}", True, (174, 239, 255))
             self.window.blit(roll_text, (550, 160))
 
             #Würfel zeichnen
             for i in range(len(self.dices)):
                 self.dices[i].draw(self.window,self.font)
 
-            start_y = 150
-            spacing = 90
+            start_y = self.height * 0.10
+            spacing = 57 + self.scale
 
             for index, row in enumerate(self.player_list[self.current_player].scorecard):
                 counts, values, total = self.dice_cup.counts()
@@ -229,23 +230,22 @@ class Game:
                     if four_btn.collidepoint(event.pos): return 4
 
             #Hintergrundfarbe
-            # window.fill((18, 22, 28))
-            self.draw_vertical_gradient((5, 5, 5), (45, 45, 50))
+            self.draw_vertical_gradient((18, 22, 28), (23, 27, 33))
 
 
             #Aufgabe der Spiel Infos
             lines = game_info.split("\n")
             line_height = font.get_height() + 5
             for i, line in enumerate(lines):
-                rendered = font.render(line, True, (255,255,255))
+                rendered = font.render(line, True, (230,230,230))
                 window.blit(rendered, (self.width * 0.60, (self.height * 0.15) + i * line_height))
 
             #Ausgabe der Überschrift
-            h_font = head_font.render("Willkommen bei Kniffel!", True, (80,180,255))
+            h_font = head_font.render("Willkommen bei Kniffel!", True, (174, 239, 255))
             window.blit(h_font, (self.width * 0.15,self.height * 0.10))
 
             #Ausgabe "Wie viele Spieler?"
-            title = font.render("Wie viele Spieler?", True, (255,255,255))
+            title = font.render("Wie viele Spieler?", True, (230,230,230))
             window.blit(title, (self.width * 0.20, self.height * 0.19))
 
             #Buttons anzeigen
@@ -284,9 +284,9 @@ class Game:
                         if len(name) < 12:
                             name += event.unicode
 
-            window.fill((20,20,20))
+            self.draw_vertical_gradient((18, 22, 28), (23, 27, 33))
 
-            h_font = self.head_font.render("Spielernamen eingeben:", True, (80,180,255))
+            h_font = self.head_font.render("Spielernamen eingeben:", True, (174, 239, 255))
             window.blit(h_font, (self.width * 0.15, self.height * 0.20))
 
             title = font.render(f"Name für Spieler {number} eingeben:", True, (255,255,255))
@@ -317,7 +317,10 @@ class Game:
                     pygame.quit()
                     exit()
 
-            win.fill((20,20,20))
+            self.draw_vertical_gradient((18, 22, 28), (23, 27, 33))
+
+            h_font = self.head_font.render("Ergebnis:", True, (174, 239, 255))
+            self.window.blit(h_font, (self.width * 0.15,self.height * 0.10))
 
             y = 250
             for player in player_list:

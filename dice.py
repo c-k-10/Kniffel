@@ -62,7 +62,7 @@ class Dice:
             temp_rect = self.rect
 
         # === Würfel-Hintergrund ===
-        pygame.draw.rect(window, "white", temp_rect, border_radius=8)
+        pygame.draw.rect(window, self.color, temp_rect, border_radius=8)
 
         # Fixierter Würfel → blauer Rahmen
         if self.fixed:
