@@ -148,8 +148,8 @@ class Game:
             self.draw_vertical_gradient((18, 22, 28), (23, 27, 33))
 
             #Würfelfeld zeichnen
-            pygame.draw.circle(self.window, (30,77,30), (self.width * 0.20, self.height * 0.35), self.circle_radius)
-            pygame.draw.circle(self.window, (78,52,39), (self.width * 0.20, self.height * 0.35), self.circle_radius, 20)
+            pygame.draw.circle(self.window, (40, 120, 95), (self.width * 0.20, self.height * 0.35), self.circle_radius)
+            pygame.draw.circle(self.window, (78, 52, 39), (self.width * 0.20, self.height * 0.35), self.circle_radius, 20)
 
             #Spielernamen ausgeben
             player_text = self.font.render(f"Spieler: {self.player_list[self.current_player].name}", True, (255,255,255))

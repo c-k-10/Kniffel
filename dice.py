@@ -66,7 +66,7 @@ class Dice:
 
         # Fixierter Würfel → blauer Rahmen
         if self.fixed:
-            pygame.draw.rect(window, (0, 0, 255), temp_rect, width=4, border_radius=8)
+            pygame.draw.rect(window, (150, 220, 240), temp_rect, width=4, border_radius=8)
 
         # === Punkte zeichnen ===
         cx = temp_rect.x + temp_rect.width // 2
