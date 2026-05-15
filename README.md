@@ -22,9 +22,9 @@ Ein digitales Kniffel‑Spiel mit Pygame, das das klassische Würfelerlebnis mit
 - Am Ende gewinnt der Spieler mit der höchsten Gesamtpunktzahl
 
 ## Projektstruktur
-main.py        # Hauptprogramm und Start des Main-Loops
-cup.py         # Definition der Cup-Klasse (Würfelbecher)
-dice.py        # Definition der Dice-Klasse (einzelner Würfel)
-game.py        # Definition der Game-Klasse (Spielablauf)
-player.py      # Definition der Player-Klasse (Spieler & Daten)
-scorecard.py   # Definition der Scorecard-Klasse (Punkte & Kategorien)
+- main.py        # Hauptprogramm und Start des Main-Loops
+- cup.py         # Definition der Cup-Klasse (Würfelbecher)
+- dice.py        # Definition der Dice-Klasse (einzelner Würfel)
+- game.py        # Definition der Game-Klasse (Spielablauf)
+- player.py      # Definition der Player-Klasse (Spieler & Daten)
+- scorecard.py   # Definition der Scorecard-Klasse (Punkte & Kategorien)
