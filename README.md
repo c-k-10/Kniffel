@@ -1,9 +1,9 @@
 # Kniffel
 
-Beschreibung
+## Beschreibung
 Ein digitales Kniffel‑Spiel mit Pygame, das das klassische Würfelerlebnis mit einem modernen Dark‑UI, animierten Würfeln und einer übersichtlichen Punkteverwaltung kombiniert.
 
-Features
+## Features
 - Mehrspielermodus, 1 - 4 Spieler möglich
 - Namenseingabe für jeden Spieler
 - Drei Würfe pro Runde mit frei wählbaren gehaltenen Würfeln
@@ -12,7 +12,7 @@ Features
 - Ausgegraute Kategorien nach Auswahl
 - Gewinneranzeige am Spielende
 
-Grundregeln
+## Grundregeln
 - Es wird mit 5 Würfeln gespielt
 - Pro Runde sind bis zu 3 Würfe möglich
 - Nach jedem Wurf können beliebige Würfel gehalten oder gelöst werden
@@ -21,7 +21,7 @@ Grundregeln
 - Jede Kategorie kann nur einmal genutzt werden
 - Am Ende gewinnt der Spieler mit der höchsten Gesamtpunktzahl
 
-Projektstruktur
+## Projektstruktur
 main.py        # Hauptprogramm und Start des Main-Loops
 cup.py         # Definition der Cup-Klasse (Würfelbecher)
 dice.py        # Definition der Dice-Klasse (einzelner Würfel)
